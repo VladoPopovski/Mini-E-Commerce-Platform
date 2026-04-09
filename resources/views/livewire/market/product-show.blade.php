@@ -1,7 +1,20 @@
 <div class="mx-auto max-w-4xl">
     <div class="mb-4">
-        <flux:link href="{{ route('market.index') }}">← Back to marketplace</flux:link>
+        <flux:link href="{{ route('market.index') }}" wire:navigate>← Back to marketplace</flux:link>
     </div>
+
+    @if(session('success'))
+        <div class="mb-4 rounded-lg bg-green-50 p-4 text-sm text-green-700 dark:bg-green-900/20 dark:text-green-400">
+            {{ session('success') }}
+            <a href="{{ route('cart.index') }}" class="ml-2 underline font-medium">View Cart →</a>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="mb-4 rounded-lg bg-red-50 p-4 text-sm text-red-700 dark:bg-red-900/20 dark:text-red-400">
+            {{ session('error') }}
+        </div>
+    @endif
 
     <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
         <img
@@ -24,19 +37,22 @@
                 </span>
             </div>
 
-            <div class="mt-6">
-                @auth
-                    @if(auth()->user()->isBuyer())
-                        <flux:button variant="primary" href="{{ route('cart.index') }}">
-                            Add to Cart
-                        </flux:button>
-                    @endif
-                @else
-                    <flux:button variant="primary" href="{{ route('login') }}">
-                        Login to purchase
+            @if($product->stock > 0)
+                <div class="mt-6 flex items-center gap-3">
+                    <input
+                        wire:model="quantity"
+                        type="number"
+                        min="1"
+                        max="{{ $product->stock }}"
+                        class="w-20 rounded-lg border border-zinc-300 px-3 py-2 text-center dark:border-zinc-600 dark:bg-zinc-800 dark:text-white"
+                    />
+                    <flux:button wire:click="addToCart" variant="primary">
+                        Add to Cart
                     </flux:button>
-                @endauth
-            </div>
+                </div>
+            @else
+                <flux:button disabled class="mt-6">Out of Stock</flux:button>
+            @endif
         </div>
     </div>
 </div>
