@@ -52,6 +52,12 @@
                 viewable
             />
 
+            <!-- Role -->
+            <flux:select name="role" :label="__('I want to')" required>
+                <option value="buyer" {{ old('role') === 'buyer' ? 'selected' : '' }}>Shop as a Buyer</option>
+                <option value="vendor" {{ old('role') === 'vendor' ? 'selected' : '' }}>Sell as a Vendor</option>
+            </flux:select>
+
             <div class="flex items-center justify-end">
                 <flux:button type="submit" variant="primary" class="w-full" data-test="register-user-button">
                     {{ __('Create account') }}
