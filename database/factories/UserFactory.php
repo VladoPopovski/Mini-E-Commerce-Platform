@@ -24,4 +24,18 @@ class UserFactory extends Factory
 
     public function vendor(): static { return $this->state(['role' => UserRole::VENDOR]); }
     public function admin(): static  { return $this->state(['role' => UserRole::ADMIN]); }
+
+    public function unverified(): static
+    {
+        return $this->state(['email_verified_at' => null]);
+    }
+
+    public function withTwoFactor(): static
+    {
+        return $this->state([
+            'two_factor_secret'         => encrypt('fake-secret'),
+            'two_factor_recovery_codes' => encrypt(json_encode(['code1', 'code2'])),
+            'two_factor_confirmed_at'   => now(),
+        ]);
+    }
 }

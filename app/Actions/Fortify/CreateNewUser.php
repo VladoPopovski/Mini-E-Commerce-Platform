@@ -20,7 +20,7 @@ class CreateNewUser implements CreatesNewUsers
         Validator::make($input, [
             ...$this->profileRules(),
             'password' => $this->passwordRules(),
-            'role'     => ['required', 'in:buyer,vendor'],
+            'role'     => ['sometimes', 'in:buyer,vendor'],
         ])->validate();
 
         return DB::transaction(function () use ($input) {
@@ -28,10 +28,9 @@ class CreateNewUser implements CreatesNewUsers
                 'name'     => $input['name'],
                 'email'    => $input['email'],
                 'password' => $input['password'],
-                'role'     => $input['role'],
+                'role'     => $input['role'] ?? UserRole::BUYER,
             ]);
 
-            // Auto-create a Vendor record if registering as vendor
             if ($user->role === UserRole::VENDOR) {
                 Vendor::create(['user_id' => $user->id]);
             }
